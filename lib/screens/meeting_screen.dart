@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hmssdk_flutter/hmssdk_flutter.dart';
 import 'package:provider/provider.dart';
-
 import '../models/data_store.dart';
-import '../services/join_service.dart';
 import '../services/sdk_initializer.dart';
 
 class MeetingScreen extends StatefulWidget {
-  MeetingScreen({Key? key}) : super(key: key);
+  const MeetingScreen({Key? key}) : super(key: key);
 
   @override
   _MeetingScreenState createState() => _MeetingScreenState();
@@ -16,41 +14,19 @@ class MeetingScreen extends StatefulWidget {
 class _MeetingScreenState extends State<MeetingScreen> {
   bool isLocalAudioOn = true;
   bool isLocalVideoOn = true;
-  bool _isLoading = false;
-  Offset position = Offset(10, 10);
+  final bool _isLoading = false;
+  Offset position = const Offset(10, 10);
 
   Future<bool> leaveRoom() async {
     SdkInitializer.hmssdk.leave();
-    //FireBaseServices.leaveRoom();
     Navigator.pop(context);
     return false;
   }
 
-  Future<void> switchRoom() async {
-    setState(() {
-      _isLoading = true;
-    });
-    isLocalAudioOn = true;
-    isLocalVideoOn = true;
-
-    SdkInitializer.hmssdk.leave();
-    //FireBaseServices.leaveRoom();
-    bool roomJoinSuccessful = await JoinService.join(SdkInitializer.hmssdk);
-    if (!roomJoinSuccessful) {
-      Navigator.pop(context);
-    }
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  bool _isMoved = false;
   @override
   Widget build(BuildContext context) {
     final _isVideoOff = context.select<UserDataStore, bool>(
         (user) => user.remoteVideoTrack?.isMute ?? true);
-    final _isAudioOff = context.select<UserDataStore, bool>(
-        (user) => user.remoteAudioTrack?.isMute ?? true);
     final _peer =
         context.select<UserDataStore, HMSPeer?>((user) => user.remotePeer);
     final remoteTrack = context
@@ -115,7 +91,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                             ],
                           ),
                           Padding(
-                            padding: EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(20),
                             child: Align(
                               alignment: Alignment.bottomRight,
                               child: Draggable<bool>(

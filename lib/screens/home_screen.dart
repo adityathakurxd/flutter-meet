@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_meet/models/data_store.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -6,8 +5,6 @@ import 'package:provider/provider.dart';
 import '../services/join_service.dart';
 import '../services/sdk_initializer.dart';
 import 'meeting_screen.dart';
-import 'package:http/http.dart' as http;
-import 'package:hmssdk_flutter/hmssdk_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -66,11 +63,11 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
           elevation: 0,
-          title: Text("Meet"),
+          title: const Text("Meet"),
           centerTitle: true,
           actions: [
             IconButton(
-              icon: Icon(Icons.account_circle),
+              icon: const Icon(Icons.account_circle),
               onPressed: () {},
             ),
           ],
@@ -90,36 +87,36 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               ListTile(
                 title: Row(
-                  children: [
+                  children: const [
                     Icon(Icons.settings_outlined),
                     SizedBox(
                       width: 10,
                     ),
-                    const Text('Settings'),
+                    Text('Settings'),
                   ],
                 ),
                 onTap: () {},
               ),
               ListTile(
                 title: Row(
-                  children: [
+                  children: const [
                     Icon(Icons.feedback_outlined),
                     SizedBox(
                       width: 10,
                     ),
-                    const Text('Send feedback'),
+                    Text('Send feedback'),
                   ],
                 ),
                 onTap: () {},
               ),
               ListTile(
                 title: Row(
-                  children: [
+                  children: const [
                     Icon(Icons.help_outline),
                     SizedBox(
                       width: 10,
                     ),
-                    const Text('Help'),
+                    Text('Help'),
                   ],
                 ),
                 onTap: () {},
@@ -137,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     showModalBottomSheet<void>(
                       context: context,
                       builder: (BuildContext context) {
-                        return Container(
+                        return SizedBox(
                           height: 200,
                           child: ListView(
                             padding: EdgeInsets.zero,
@@ -155,12 +152,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onTap: () async {
                                   bool isJoined = await joinRoom();
                                   if (isJoined) {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (_) =>
-                                                ListenableProvider.value(
-                                                    value: _dataStore,
-                                                    child: MeetingScreen())));
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (_) =>
+                                            ListenableProvider.value(
+                                                value: _dataStore,
+                                                child: const MeetingScreen())));
                                   } else {
                                     const SnackBar(content: Text("Error"));
                                   }
@@ -194,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         .style!
                         .copyWith(
                             side: MaterialStateProperty.all(
-                                BorderSide(color: Colors.white)),
+                                const BorderSide(color: Colors.white)),
                             backgroundColor: MaterialStateColor.resolveWith(
                                 (states) => Colors.transparent),
                             foregroundColor: MaterialStateColor.resolveWith(
