@@ -19,7 +19,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
   bool isLocalAudioOn = true;
   bool isLocalVideoOn = true;
   final bool _isLoading = false;
-  Offset position = const Offset(10, 10);
 
   Future<bool> leaveRoom() async {
     SdkInitializer.hmssdk.leave();
