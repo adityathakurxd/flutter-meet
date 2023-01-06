@@ -16,6 +16,10 @@ class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
   HMSVideoTrack? localTrack;
   bool _disposed = false;
   late HMSPeer localPeer;
+  
+  void startListen() {
+    SdkInitializer.hmssdk.addUpdateListener(listener: this);
+  }
 
   @override
   void dispose() {
@@ -31,13 +35,6 @@ class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
   }
 
   @override
-  void onChangeTrackStateRequest(
-      {required HMSTrackChangeRequest hmsTrackChangeRequest}) {}
-
-  @override
-  void onError({required HMSException error}) {}
-
-  @override
   void onJoin({required HMSRoom room}) {
     for (HMSPeer each in room.peers!) {
       if (each.isLocal) {
@@ -46,9 +43,6 @@ class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
       }
     }
   }
-
-  @override
-  void onMessage({required HMSMessage message}) {}
 
   @override
   void onPeerUpdate({required HMSPeer peer, required HMSPeerUpdate update}) {
@@ -74,22 +68,6 @@ class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
     }
     notifyListeners();
   }
-
-  @override
-  void onReconnected() {}
-
-  @override
-  void onReconnecting() {}
-
-  @override
-  void onRemovedFromRoom(
-      {required HMSPeerRemovedFromPeer hmsPeerRemovedFromPeer}) {}
-
-  @override
-  void onRoleChangeRequest({required HMSRoleChangeRequest roleChangeRequest}) {}
-
-  @override
-  void onRoomUpdate({required HMSRoom room, required HMSRoomUpdate update}) {}
 
   @override
   void onTrackUpdate(
@@ -152,21 +130,40 @@ class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
     }
     notifyListeners();
   }
-
-  @override
-  void onUpdateSpeakers({required List<HMSSpeaker> updateSpeakers}) {}
-
-  void startListen() {
-    SdkInitializer.hmssdk.addUpdateListener(listener: this);
-  }
-
-  @override
-  void onAudioDeviceChanged(
-      {HMSAudioDevice? currentAudioDevice,
-      List<HMSAudioDevice>? availableAudioDevice}) {}
-
+  
   @override
   void onHMSError({required HMSException error}) {
     log(error.message??"");
   }
+  
+  @override
+  void onMessage({required HMSMessage message}) {}
+  
+  @override
+  void onRoomUpdate({required HMSRoom room, required HMSRoomUpdate update}) {}
+  
+  @override
+  void onUpdateSpeakers({required List<HMSSpeaker> updateSpeakers}) {}
+
+  @override
+  void onReconnected() {}
+
+  @override
+  void onReconnecting() {}
+
+  @override
+  void onRemovedFromRoom(
+      {required HMSPeerRemovedFromPeer hmsPeerRemovedFromPeer}) {}
+
+  @override
+  void onRoleChangeRequest({required HMSRoleChangeRequest roleChangeRequest}) {}
+
+  @override
+  void onChangeTrackStateRequest(
+      {required HMSTrackChangeRequest hmsTrackChangeRequest}) {}
+  
+  @override
+  void onAudioDeviceChanged(
+      {HMSAudioDevice? currentAudioDevice,
+      List<HMSAudioDevice>? availableAudioDevice}) {}
 }
