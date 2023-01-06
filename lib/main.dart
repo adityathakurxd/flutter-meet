@@ -1,5 +1,8 @@
+//Package imports
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
+
+//File imports
+import 'package:google_meet/screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());

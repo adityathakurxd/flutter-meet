@@ -1,10 +1,13 @@
+//Package imports
 import 'package:flutter/material.dart';
 import 'package:google_meet/models/data_store.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import '../services/join_service.dart';
-import '../services/sdk_initializer.dart';
-import 'meeting_screen.dart';
+
+//File imports
+import 'package:google_meet/screens/meeting_screen.dart';
+import 'package:google_meet/services/join_service.dart';
+import 'package:google_meet/services/sdk_initializer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

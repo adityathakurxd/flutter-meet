@@ -1,7 +1,13 @@
+//Dart imports
+import 'dart:developer';
+
+//Package imports 
 import 'package:flutter/material.dart';
 import 'package:hmssdk_flutter/hmssdk_flutter.dart';
 
-import '../services/sdk_initializer.dart';
+//File imports
+import 'package:google_meet/services/sdk_initializer.dart';
+
 
 class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
   HMSTrack? remoteVideoTrack;
@@ -55,10 +61,6 @@ class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
       case HMSPeerUpdate.peerLeft:
         remotePeer = null;
         break;
-      case HMSPeerUpdate.audioToggled:
-        break;
-      case HMSPeerUpdate.videoToggled:
-        break;
       case HMSPeerUpdate.roleUpdated:
         break;
       case HMSPeerUpdate.metadataChanged:
@@ -66,6 +68,8 @@ class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
       case HMSPeerUpdate.nameChanged:
         break;
       case HMSPeerUpdate.defaultUpdate:
+        break;
+      case HMSPeerUpdate.networkQualityUpdated:
         break;
     }
     notifyListeners();
@@ -95,9 +99,9 @@ class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
     switch (trackUpdate) {
       case HMSTrackUpdate.trackAdded:
         if (track.kind == HMSTrackKind.kHMSTrackKindAudio) {
-          if (!track.peer!.isLocal) remoteAudioTrack = track;
+          if (!peer.isLocal) remoteAudioTrack = track;
         } else if (track.kind == HMSTrackKind.kHMSTrackKindVideo) {
-          if (!track.peer!.isLocal) {
+          if (!peer.isLocal) {
             remoteVideoTrack = track;
           } else {
             localTrack = track as HMSVideoTrack;
@@ -106,9 +110,9 @@ class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
         break;
       case HMSTrackUpdate.trackRemoved:
         if (track.kind == HMSTrackKind.kHMSTrackKindAudio) {
-          if (!track.peer!.isLocal) remoteAudioTrack = null;
+          if (!peer.isLocal) remoteAudioTrack = null;
         } else if (track.kind == HMSTrackKind.kHMSTrackKindVideo) {
-          if (!track.peer!.isLocal) {
+          if (!peer.isLocal) {
             remoteVideoTrack = null;
           } else {
             localTrack = null;
@@ -117,9 +121,9 @@ class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
         break;
       case HMSTrackUpdate.trackMuted:
         if (track.kind == HMSTrackKind.kHMSTrackKindAudio) {
-          if (!track.peer!.isLocal) remoteAudioTrack = track;
+          if (!peer.isLocal) remoteAudioTrack = track;
         } else if (track.kind == HMSTrackKind.kHMSTrackKindVideo) {
-          if (!track.peer!.isLocal) {
+          if (!peer.isLocal) {
             remoteVideoTrack = track;
           } else {
             localTrack = null;
@@ -128,9 +132,9 @@ class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
         break;
       case HMSTrackUpdate.trackUnMuted:
         if (track.kind == HMSTrackKind.kHMSTrackKindAudio) {
-          if (!track.peer!.isLocal) remoteAudioTrack = track;
+          if (!peer.isLocal) remoteAudioTrack = track;
         } else if (track.kind == HMSTrackKind.kHMSTrackKindVideo) {
-          if (!track.peer!.isLocal) {
+          if (!peer.isLocal) {
             remoteVideoTrack = track;
           } else {
             localTrack = track as HMSVideoTrack;
@@ -154,5 +158,15 @@ class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
 
   void startListen() {
     SdkInitializer.hmssdk.addUpdateListener(listener: this);
+  }
+
+  @override
+  void onAudioDeviceChanged(
+      {HMSAudioDevice? currentAudioDevice,
+      List<HMSAudioDevice>? availableAudioDevice}) {}
+
+  @override
+  void onHMSError({required HMSException error}) {
+    log(error.message??"");
   }
 }
