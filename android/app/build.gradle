@@ -65,5 +65,4 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.github.100mslive:android-sdk:2.0.7'
 }

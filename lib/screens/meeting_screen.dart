@@ -1,8 +1,12 @@
+//Package imports
+import 'package:draggable_widget/draggable_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:hmssdk_flutter/hmssdk_flutter.dart';
 import 'package:provider/provider.dart';
-import '../models/data_store.dart';
-import '../services/sdk_initializer.dart';
+
+//File imports
+import 'package:google_meet/models/data_store.dart';
+import 'package:google_meet/services/sdk_initializer.dart';
 
 class MeetingScreen extends StatefulWidget {
   const MeetingScreen({Key? key}) : super(key: key);
@@ -45,8 +49,14 @@ class _MeetingScreenState extends State<MeetingScreen> {
               : (_peer == null)
                   ? Container(
                       color: Colors.black.withOpacity(0.9),
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
                       child: Stack(
                         children: [
+                          Positioned(
+                              child: IconButton(
+                                  onPressed: () => leaveRoom(),
+                                  icon: const Icon(Icons.arrow_back_ios,color: Colors.white,))),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,28 +100,11 @@ class _MeetingScreenState extends State<MeetingScreen> {
                               ),
                             ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Draggable<bool>(
-                                  data: true,
-                                  childWhenDragging: Container(),
-                                  child: localPeerTile(localTrack),
-                                  onDragEnd: (details) => {
-                                        setState(
-                                            () => position = details.offset)
-                                      },
-                                  feedback: Container(
-                                    height: 200,
-                                    width: 150,
-                                    color: Colors.black,
-                                    child: const Icon(
-                                      Icons.videocam_off_rounded,
-                                      color: Colors.white,
-                                    ),
-                                  )),
-                            ),
+                          DraggableWidget(
+                            topMargin: 10,
+                            bottomMargin: 130,
+                            horizontalSpace: 10,
+                            child: localPeerTile(localTrack),
                           ),
                         ],
                       ),
@@ -126,23 +119,30 @@ class _MeetingScreenState extends State<MeetingScreen> {
                               child: _isVideoOff
                                   ? Center(
                                       child: Container(
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color:
-                                                      Colors.blue.withAlpha(60),
-                                                  blurRadius: 10.0,
-                                                  spreadRadius: 2.0,
-                                                ),
-                                              ]),
-                                          child:
-                                              const CircularProgressIndicator()),
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color:
+                                                    Colors.blue.withAlpha(60),
+                                                blurRadius: 10.0,
+                                                spreadRadius: 2.0,
+                                              ),
+                                            ]),
+                                        child: const Icon(
+                                          Icons.videocam_off,
+                                          color: Colors.white,
+                                          size: 30,
+                                        ),
+                                      ),
                                     )
                                   : (remoteTrack != null)
-                                      ? HMSVideoView(
-                                          track: remoteTrack as HMSVideoTrack,
-                                          matchParent: false)
+                                      ? Container(
+                                          child: HMSVideoView(
+                                            scaleType: ScaleType.SCALE_ASPECT_FILL,
+                                            track: remoteTrack as HMSVideoTrack,
+                                          ),
+                                        )
                                       : const Center(child: Text("No Video"))),
                           Align(
                             alignment: Alignment.bottomCenter,
@@ -222,16 +222,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
                               ),
                             ),
                           ),
-                          _isVideoOff
-                              ? const Align(
-                                  alignment: Alignment.center,
-                                  child: Icon(
-                                    Icons.videocam_off,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                )
-                              : Container(),
                           Positioned(
                             top: 10,
                             left: 10,
@@ -240,7 +230,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                 leaveRoom();
                               },
                               child: const Icon(
-                                Icons.arrow_back,
+                                Icons.arrow_back_ios,
                                 color: Colors.white,
                               ),
                             ),
@@ -265,29 +255,11 @@ class _MeetingScreenState extends State<MeetingScreen> {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 100),
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Draggable<bool>(
-                                  data: true,
-                                  childWhenDragging: Container(),
-                                  child: localPeerTile(localTrack),
-                                  onDragEnd: (details) => {
-                                        setState(
-                                            () => position = details.offset)
-                                      },
-                                  feedback: Container(
-                                    height: 200,
-                                    width: 150,
-                                    color: Colors.black,
-                                    child: const Icon(
-                                      Icons.videocam_off_rounded,
-                                      color: Colors.white,
-                                    ),
-                                  )),
-                            ),
+                          DraggableWidget(
+                            topMargin: 10,
+                            bottomMargin: 130,
+                            horizontalSpace: 10,
+                            child: localPeerTile(localTrack),
                           ),
                         ],
                       ),
@@ -298,18 +270,21 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   Widget localPeerTile(HMSVideoTrack? localTrack) {
-    return Container(
-      height: 200,
-      width: 150,
-      color: Colors.black,
-      child: (isLocalVideoOn && localTrack != null)
-          ? HMSVideoView(
-              track: localTrack,
-            )
-          : const Icon(
-              Icons.videocam_off_rounded,
-              color: Colors.white,
-            ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        height: 150,
+        width: 100,
+        color: Colors.black,
+        child: (isLocalVideoOn && localTrack != null)
+            ? HMSVideoView(
+                track: localTrack,
+              )
+            : const Icon(
+                Icons.videocam_off_rounded,
+                color: Colors.white,
+              ),
+      ),
     );
   }
 }

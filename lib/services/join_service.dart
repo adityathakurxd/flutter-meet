@@ -1,6 +1,9 @@
+//Dart imports
+import 'dart:convert';
+
+//Package imports
 import 'package:hmssdk_flutter/hmssdk_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class JoinService {
   static Future<bool> join(HMSSDK hmssdk) async {
