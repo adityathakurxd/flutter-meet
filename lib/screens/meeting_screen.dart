@@ -43,6 +43,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
       },
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.black,
           body: (_isLoading)
               ? const CircularProgressIndicator()
               : (_peer == null)
@@ -55,7 +56,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
                           Positioned(
                               child: IconButton(
                                   onPressed: () => leaveRoom(),
-                                  icon: const Icon(Icons.arrow_back_ios,color: Colors.white,))),
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios,
+                                    color: Colors.white,
+                                  ))),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,8 +141,16 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                     )
                                   : (remoteTrack != null)
                                       ? Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.5,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.5,
                                           child: HMSVideoView(
-                                            scaleType: ScaleType.SCALE_ASPECT_FILL,
+                                            // scaleType: ScaleType.SCALE_ASPECT_FILL,
                                             track: remoteTrack as HMSVideoTrack,
                                           ),
                                         )
@@ -254,12 +266,9 @@ class _MeetingScreenState extends State<MeetingScreen> {
                               ),
                             ),
                           ),
-                          DraggableWidget(
-                            topMargin: 10,
-                            bottomMargin: 130,
-                            horizontalSpace: 10,
-                            child: localPeerTile(localTrack),
-                          ),
+                          Align(
+                              alignment: Alignment.topRight,
+                              child: localPeerTile(localTrack)),
                         ],
                       ),
                     ),
@@ -270,10 +279,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
   Widget localPeerTile(HMSVideoTrack? localTrack) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
+      // borderRadius: BorderRadius.circular(10),
       child: Container(
-        height: 150,
-        width: 100,
+        height: MediaQuery.of(context).size.height * 0.5,
+        width: MediaQuery.of(context).size.width * 0.5,
         color: Colors.black,
         child: (isLocalVideoOn && localTrack != null)
             ? HMSVideoView(
