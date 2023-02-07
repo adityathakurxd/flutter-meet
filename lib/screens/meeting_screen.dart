@@ -176,11 +176,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                   GestureDetector(
                                     onTap: () => {
                                       SdkInitializer.hmssdk
-                                          .switchVideo(isOn: isLocalVideoOn),
-                                      if (!isLocalVideoOn)
-                                        SdkInitializer.hmssdk.startCapturing()
-                                      else
-                                        SdkInitializer.hmssdk.stopCapturing(),
+                                          .toggleCameraMuteState(),
                                       setState(() {
                                         isLocalVideoOn = !isLocalVideoOn;
                                       })
@@ -200,7 +196,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                   GestureDetector(
                                     onTap: () => {
                                       SdkInitializer.hmssdk
-                                          .switchAudio(isOn: isLocalAudioOn),
+                                          .toggleMicMuteState(),
                                       setState(() {
                                         isLocalAudioOn = !isLocalAudioOn;
                                       })
