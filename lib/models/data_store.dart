@@ -1,24 +1,29 @@
 //Dart imports
 import 'dart:developer';
 
-//Package imports 
+//Package imports
 import 'package:flutter/material.dart';
 import 'package:hmssdk_flutter/hmssdk_flutter.dart';
 
 //File imports
 import 'package:google_meet/services/sdk_initializer.dart';
 
-
-class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
+class UserDataStore extends ChangeNotifier
+    implements HMSUpdateListener, HMSActionResultListener {
   HMSTrack? remoteVideoTrack;
   HMSPeer? remotePeer;
   HMSTrack? remoteAudioTrack;
   HMSVideoTrack? localTrack;
   bool _disposed = false;
   late HMSPeer localPeer;
-  
+  bool isRoomEnded = false;
+
   void startListen() {
     SdkInitializer.hmssdk.addUpdateListener(listener: this);
+  }
+
+  void leaveRoom() async {
+    SdkInitializer.hmssdk.leave(hmsActionResultListener: this);
   }
 
   @override
@@ -166,4 +171,27 @@ class UserDataStore extends ChangeNotifier implements HMSUpdateListener {
   void onAudioDeviceChanged(
       {HMSAudioDevice? currentAudioDevice,
       List<HMSAudioDevice>? availableAudioDevice}) {}
+
+  @override
+  void onException(
+      {required HMSActionResultListenerMethod methodType,
+      Map<String, dynamic>? arguments,
+      required HMSException hmsException}) {
+    // TODO: implement onException
+    switch (methodType) {
+      case HMSActionResultListenerMethod.leave:
+        log("Leave room error ${hmsException.message}");
+    }
+  }
+
+  @override
+  void onSuccess(
+      {required HMSActionResultListenerMethod methodType,
+      Map<String, dynamic>? arguments}) {
+    switch (methodType) {
+      case HMSActionResultListenerMethod.leave:
+        isRoomEnded = true;
+        notifyListeners();
+    }
+  }
 }
