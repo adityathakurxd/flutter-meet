@@ -20,12 +20,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
   bool isLocalVideoOn = true;
   final bool _isLoading = false;
 
-  Future<bool> leaveRoom() async {
-    SdkInitializer.hmssdk.leave();
-    Navigator.pop(context);
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
     final _isVideoOff = context.select<UserDataStore, bool>(
@@ -39,7 +33,9 @@ class _MeetingScreenState extends State<MeetingScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        return leaveRoom();
+        context.read<UserDataStore>().leaveRoom();
+        Navigator.pop(context);
+        return true;
       },
       child: SafeArea(
         child: Scaffold(
@@ -54,8 +50,14 @@ class _MeetingScreenState extends State<MeetingScreen> {
                         children: [
                           Positioned(
                               child: IconButton(
-                                  onPressed: () => leaveRoom(),
-                                  icon: const Icon(Icons.arrow_back_ios,color: Colors.white,))),
+                                  onPressed: () {
+                                    context.read<UserDataStore>().leaveRoom();
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios,
+                                    color: Colors.white,
+                                  ))),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +155,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                 children: [
                                   GestureDetector(
                                     onTap: () async {
-                                      leaveRoom();
+                                      context.read<UserDataStore>().leaveRoom();
+                                      Navigator.pop(context);
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -222,7 +225,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
                             left: 10,
                             child: GestureDetector(
                               onTap: () {
-                                leaveRoom();
+                                context.read<UserDataStore>().leaveRoom();
+                                Navigator.pop(context);
                               },
                               child: const Icon(
                                 Icons.arrow_back_ios,
