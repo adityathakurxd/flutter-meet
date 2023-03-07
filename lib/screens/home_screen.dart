@@ -22,7 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    SdkInitializer.hmssdk.build();
     getPermissions();
     super.initState();
   }
@@ -45,13 +44,15 @@ class _HomeScreenState extends State<HomeScreen> {
       _isLoading = true;
     });
     //The join method initialize sdk,gets auth token,creates HMSConfig and helps in joining the room
+    await SdkInitializer.hmssdk.build();
+    _dataStore = UserDataStore();
+    
+    //Here we are attaching a listener to our DataStoreClass
+    _dataStore.startListen();
     bool isJoinSuccessful = await JoinService.join(SdkInitializer.hmssdk);
     if (!isJoinSuccessful) {
       return false;
     }
-    _dataStore = UserDataStore();
-    //Here we are attaching a listener to our DataStoreClass
-    _dataStore.startListen();
     setState(() {
       _isLoading = false;
     });
