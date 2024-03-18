@@ -23,7 +23,8 @@ class UserDataStore extends ChangeNotifier
   }
 
   void leaveRoom() async {
-    SdkInitializer.hmssdk.leave(hmsActionResultListener: this);
+    SdkInitializer.hmssdk.removeUpdateListener(listener: this);
+    await SdkInitializer.hmssdk.leave();
   }
 
   @override
@@ -35,6 +36,7 @@ class UserDataStore extends ChangeNotifier
   @override
   void notifyListeners() {
     if (!_disposed) {
+      log("Updated");
       super.notifyListeners();
     }
   }
@@ -53,9 +55,12 @@ class UserDataStore extends ChangeNotifier
   void onPeerUpdate({required HMSPeer peer, required HMSPeerUpdate update}) {
     switch (update) {
       case HMSPeerUpdate.peerJoined:
-        remotePeer = peer;
-        remoteAudioTrack = peer.audioTrack;
-        remoteVideoTrack = peer.videoTrack;
+        if (!peer.isLocal) {
+          remotePeer = peer;
+          remoteAudioTrack = peer.audioTrack;
+          remoteVideoTrack = peer.videoTrack;
+          log("User joined: ${peer.name}");
+        }
         break;
       case HMSPeerUpdate.peerLeft:
         remotePeer = null;
@@ -70,7 +75,11 @@ class UserDataStore extends ChangeNotifier
         break;
       case HMSPeerUpdate.networkQualityUpdated:
         break;
+      case HMSPeerUpdate.handRaiseUpdated:
+        // TODO: Handle this case.
+        break;
     }
+    log("Updated -> onPeerUpdate $update");
     notifyListeners();
   }
 
@@ -109,7 +118,7 @@ class UserDataStore extends ChangeNotifier
           if (!peer.isLocal) {
             remoteVideoTrack = track;
           } else {
-            localTrack = null;
+            localTrack = track as HMSVideoTrack;
           }
         }
         break;
@@ -133,20 +142,21 @@ class UserDataStore extends ChangeNotifier
       case HMSTrackUpdate.defaultUpdate:
         break;
     }
+    log("Updated onTrackUpdate -> $trackUpdate");
     notifyListeners();
   }
-  
+
   @override
   void onHMSError({required HMSException error}) {
-    log(error.message??"");
+    log(error.message ?? "");
   }
-  
+
   @override
   void onMessage({required HMSMessage message}) {}
-  
+
   @override
   void onRoomUpdate({required HMSRoom room, required HMSRoomUpdate update}) {}
-  
+
   @override
   void onUpdateSpeakers({required List<HMSSpeaker> updateSpeakers}) {}
 
@@ -166,7 +176,7 @@ class UserDataStore extends ChangeNotifier
   @override
   void onChangeTrackStateRequest(
       {required HMSTrackChangeRequest hmsTrackChangeRequest}) {}
-  
+
   @override
   void onAudioDeviceChanged(
       {HMSAudioDevice? currentAudioDevice,
@@ -191,7 +201,29 @@ class UserDataStore extends ChangeNotifier
     switch (methodType) {
       case HMSActionResultListenerMethod.leave:
         isRoomEnded = true;
+    log("Updated leave");
         notifyListeners();
+    }
+  }
+
+  @override
+  void onSessionStoreAvailable({HMSSessionStore? hmsSessionStore}) {
+    // TODO: implement onSessionStoreAvailable
+    hmsSessionStore?.setSessionMetadataForKey(
+        key: "pinnedMessage", data: "Hey there");
+  }
+
+  @override
+  void onPeerListUpdate(
+      {required List<HMSPeer> addedPeers,
+      required List<HMSPeer> removedPeers}) {
+    if(addedPeers.isNotEmpty){
+        if (!addedPeers[0].isLocal) {
+          remotePeer = addedPeers[0];
+          remoteAudioTrack = addedPeers[0].audioTrack;
+          remoteVideoTrack = addedPeers[0].videoTrack;
+          log("User joined: ${addedPeers[0].name}");
+        }
     }
   }
 }

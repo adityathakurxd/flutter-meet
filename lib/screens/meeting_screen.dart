@@ -1,6 +1,7 @@
 //Package imports
-import 'package:draggable_widget/draggable_widget.dart';
+
 import 'package:flutter/material.dart';
+import 'package:google_meet/screens/video_tile.dart';
 import 'package:hmssdk_flutter/hmssdk_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +20,31 @@ class _MeetingScreenState extends State<MeetingScreen> {
   bool isLocalAudioOn = true;
   bool isLocalVideoOn = true;
   final bool _isLoading = false;
+  String? orientation;
+  double width = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+     width = MediaQuery.of(context).size.width;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void setHeightWidth(BuildContext context) {
+    double phoneWidth = MediaQuery.of(context).size.width;
+    if (width == phoneWidth) {
+      width = phoneWidth * 0.66;
+    } else {
+      width = phoneWidth;
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +57,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
     final localTrack = context
         .select<UserDataStore, HMSVideoTrack?>((user) => user.localTrack);
 
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         context.read<UserDataStore>().leaveRoom();
@@ -58,10 +85,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                     Icons.arrow_back_ios,
                                     color: Colors.white,
                                   ))),
-                          Column(
+                          const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Padding(
                                 padding:
                                     EdgeInsets.only(left: 20.0, bottom: 20),
@@ -101,12 +128,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
                               ),
                             ],
                           ),
-                          DraggableWidget(
-                            topMargin: 10,
-                            bottomMargin: 130,
-                            horizontalSpace: 10,
-                            child: localPeerTile(localTrack),
-                          ),
+                          // DraggableWidget(
+                          //   initialPosition: AnchoringPosition.topLeft,
+                          //   child: localPeerTile(localTrack),
+                          // ),
                         ],
                       ),
                     )
@@ -138,11 +163,14 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                       ),
                                     )
                                   : (remoteTrack != null)
-                                      ? Container(
-                                          child: HMSVideoView(
-                                            scaleType: ScaleType.SCALE_ASPECT_FILL,
-                                            track: remoteTrack as HMSVideoTrack,
-                                          ),
+                                      ? SizedBox(
+                                          width: width,
+                                          child: VideoTile(
+                                              width: width,
+                                              remoteTrack:
+                                                  remoteTrack as HMSVideoTrack,
+                                              localTrack:
+                                                  localTrack as HMSVideoTrack),
                                         )
                                       : const Center(child: Text("No Video"))),
                           Align(
@@ -178,8 +206,16 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                   ),
                                   GestureDetector(
                                     onTap: () => {
-                                      SdkInitializer.hmssdk
-                                          .toggleCameraMuteState(),
+                                      if (isLocalVideoOn)
+                                        {
+                                          SdkInitializer.hmssdk
+                                              .startScreenShare(),
+                                        }
+                                      else
+                                        {
+                                          SdkInitializer.hmssdk
+                                              .stopScreenShare()
+                                        },
                                       setState(() {
                                         isLocalVideoOn = !isLocalVideoOn;
                                       })
@@ -239,8 +275,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
                             right: 10,
                             child: GestureDetector(
                               onTap: () {
+                                setHeightWidth(context);
                                 if (isLocalVideoOn) {
-                                  SdkInitializer.hmssdk.switchCamera();
+                                  // SdkInitializer.hmssdk.switchCamera();
+                                  // SdkInitializer.hmssdk.startAudioShare();
                                 }
                               },
                               child: CircleAvatar(
@@ -254,12 +292,12 @@ class _MeetingScreenState extends State<MeetingScreen> {
                               ),
                             ),
                           ),
-                          DraggableWidget(
-                            topMargin: 10,
-                            bottomMargin: 130,
-                            horizontalSpace: 10,
-                            child: localPeerTile(localTrack),
-                          ),
+                          // DraggableWidget(
+                          //   topMargin: 10,
+                          //   bottomMargin: 130,
+                          //   horizontalSpace: 10,
+                          //   child: localPeerTile(localTrack),
+                          // ),
                         ],
                       ),
                     ),
@@ -268,22 +306,24 @@ class _MeetingScreenState extends State<MeetingScreen> {
     );
   }
 
-  Widget localPeerTile(HMSVideoTrack? localTrack) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        height: 150,
-        width: 100,
-        color: Colors.black,
-        child: (isLocalVideoOn && localTrack != null)
-            ? HMSVideoView(
-                track: localTrack,
-              )
-            : const Icon(
-                Icons.videocam_off_rounded,
-                color: Colors.white,
-              ),
-      ),
-    );
-  }
+  // Widget localPeerTile(HMSVideoTrack? localTrack) {
+  //   return ClipRRect(
+  //     borderRadius: BorderRadius.circular(10),
+  //     child: AnimatedContainer(
+  //       duration: const Duration(milliseconds: 500),
+  //       height: height,
+  //       width: width,
+  //       color: Colors.black,
+  //       child: (isLocalVideoOn && localTrack != null)
+  //           ? HMSTextureView(
+  //               track: localTrack,
+  //               scaleType: ScaleType.SCALE_ASPECT_FILL,
+  //             )
+  //           : const Icon(
+  //               Icons.videocam_off_rounded,
+  //               color: Colors.white,
+  //             ),
+  //     ),
+  //   );
+  // }
 }

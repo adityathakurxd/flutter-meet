@@ -1,6 +1,25 @@
 package com.aditya.google_meet
 
 import io.flutter.embedding.android.FlutterActivity
+import live.hms.hmssdk_flutter.HmssdkFlutterPlugin
+import android.app.Activity
+import android.content.Intent
+import live.hms.hmssdk_flutter.Constants
 
 class MainActivity: FlutterActivity() {
+
+
+override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == Constants.SCREEN_SHARE_INTENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            data?.action = Constants.HMSSDK_RECEIVER
+            activity.sendBroadcast(data?.putExtra(Constants.METHOD_CALL, Constants.SCREEN_SHARE_REQUEST))
+        }
+
+        if (requestCode == Constants.AUDIO_SHARE_INTENT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            data?.action = Constants.HMSSDK_RECEIVER
+            activity.sendBroadcast(data?.putExtra(Constants.METHOD_CALL, Constants.AUDIO_SHARE_REQUEST))
+        }
+    }
 }
