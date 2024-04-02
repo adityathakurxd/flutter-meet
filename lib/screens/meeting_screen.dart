@@ -19,6 +19,31 @@ class _MeetingScreenState extends State<MeetingScreen> {
   bool isLocalAudioOn = true;
   bool isLocalVideoOn = true;
   final bool _isLoading = false;
+  String? orientation;
+  double width = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      width = MediaQuery.of(context).size.width;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void setHeightWidth(BuildContext context) {
+    double phoneWidth = MediaQuery.of(context).size.width;
+    if (width == phoneWidth) {
+      width = phoneWidth * 0.66;
+    } else {
+      width = phoneWidth;
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +83,10 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                     Icons.arrow_back_ios,
                                     color: Colors.white,
                                   ))),
-                          Column(
+                          const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Padding(
                                 padding:
                                     EdgeInsets.only(left: 20.0, bottom: 20),
@@ -140,7 +165,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
                                   : (remoteTrack != null)
                                       ? Container(
                                           child: HMSVideoView(
-                                            scaleType: ScaleType.SCALE_ASPECT_FILL,
+                                            scaleType:
+                                                ScaleType.SCALE_ASPECT_FILL,
                                             track: remoteTrack as HMSVideoTrack,
                                           ),
                                         )

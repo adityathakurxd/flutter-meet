@@ -18,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late UserDataStore _dataStore;
-  bool _isLoading = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   //Handles room joining functionality
   Future<bool> joinRoom() async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
     //The join method initialize sdk,gets auth token,creates HMSConfig and helps in joining the room
     await SdkInitializer.hmssdk.build();
@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return false;
     }
     setState(() {
-      _isLoading = false;
+      isLoading = false;
     });
     return true;
   }
