@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //The join method initialize sdk,gets auth token,creates HMSConfig and helps in joining the room
     await SdkInitializer.hmssdk.build();
     _dataStore = UserDataStore();
-    
+
     //Here we are attaching a listener to our DataStoreClass
     _dataStore.startListen();
     bool isJoinSuccessful = await JoinService.join(SdkInitializer.hmssdk);
@@ -90,8 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               ListTile(
-                title: Row(
-                  children: const [
+                title: const Row(
+                  children: [
                     Icon(Icons.settings_outlined),
                     SizedBox(
                       width: 10,
@@ -102,8 +102,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {},
               ),
               ListTile(
-                title: Row(
-                  children: const [
+                title: const Row(
+                  children: [
                     Icon(Icons.feedback_outlined),
                     SizedBox(
                       width: 10,
@@ -114,8 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () {},
               ),
               ListTile(
-                title: Row(
-                  children: const [
+                title: const Row(
+                  children: [
                     Icon(Icons.help_outline),
                     SizedBox(
                       width: 10,
@@ -144,8 +144,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: EdgeInsets.zero,
                             children: <Widget>[
                               ListTile(
-                                title: Row(
-                                  children: const [
+                                title: const Row(
+                                  children: [
                                     Icon(Icons.video_call),
                                     SizedBox(
                                       width: 10,
@@ -167,8 +167,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 },
                               ),
                               ListTile(
-                                title: Row(
-                                  children: const [
+                                title: const Row(
+                                  children: [
                                     Icon(Icons.close),
                                     SizedBox(
                                       width: 10,

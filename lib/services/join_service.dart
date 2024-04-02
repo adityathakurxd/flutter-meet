@@ -22,7 +22,7 @@ class JoinService {
       // Handle the error
       return false;
     }
-    HMSConfig config = HMSConfig(authToken: body['token'], userName: "user");
+    HMSConfig config = HMSConfig(authToken: authToken, userName: "user");
     await hmssdk.join(config: config);
     return true;
   }

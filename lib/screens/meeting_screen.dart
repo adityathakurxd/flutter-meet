@@ -35,16 +35,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
     super.dispose();
   }
 
-  void setHeightWidth(BuildContext context) {
-    double phoneWidth = MediaQuery.of(context).size.width;
-    if (width == phoneWidth) {
-      width = phoneWidth * 0.66;
-    } else {
-      width = phoneWidth;
-    }
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     final _isVideoOff = context.select<UserDataStore, bool>(
