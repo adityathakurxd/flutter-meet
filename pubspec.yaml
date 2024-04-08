@@ -33,8 +33,8 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  hmssdk_flutter: 1.3.0
-  permission_handler: 8.3.0
+  hmssdk_flutter: 1.9.14
+  permission_handler:
   http: 0.13.4
   provider: 6.0.2
   draggable_widget: 2.0.0
